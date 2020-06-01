@@ -38,12 +38,11 @@ int centroid_decomposition(std::vector<std::vector<int>>& adj, std::vector<std::
     int n = dfs(adj ,count, visited, visited_centroids, root); 
     int centroid = get_centroid(adj, count, visited, visited_centroids, root, n); 
     visited_centroids[centroid] = 1;
-    std::vector<int>::iterator it; 
-    for (it = adj[centroid].begin(); it != adj[centroid].end(); it++) 
+    for(auto& item : adj[centroid]) 
     { 
-        if (!visited_centroids[*it]) 
+        if (!visited_centroids[item]) 
         { 
-            int sub_centroid = centroid_decomposition(adj, parents, visited_centroids, *it, size); 
+            int sub_centroid = centroid_decomposition(adj, parents, visited_centroids, item, size); 
             parents[centroid].push_back(sub_centroid); 
             parents[sub_centroid].push_back(centroid); 
         } 
