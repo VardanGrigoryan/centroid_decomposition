@@ -31,20 +31,21 @@ std::vector<std::vector<int>> create_adjacency_list(std::vector<std::vector<int>
     return adj;
 }
 
-int centroid_decomposition(std::vector<std::vector<int>>& adj, std::vector<std::vector<int>>& parents, std::vector<bool>& visited_centroids, int root, int size) 
+int centroid_decomposition(std::vector<std::vector<int>>& adj, std::vector<std::vector<int>>& adj_nodes, std::vector<bool>& visited_centroids, std::vector<int>& levels, int src, int level, int size) 
 { 
     std::vector<bool> visited(size, 0);
     std::unordered_map<int, int> count{};
-    int n = dfs(adj ,count, visited, visited_centroids, root); 
-    int centroid = get_centroid(adj, count, visited, visited_centroids, root, n); 
+    int n = dfs(adj ,count, visited, visited_centroids, src); 
+    int centroid = get_centroid(adj, count, visited, visited_centroids, src, n);
     visited_centroids[centroid] = 1;
+    levels[centroid] = level;
     for(auto& item : adj[centroid]) 
     { 
         if (!visited_centroids[item]) 
         { 
-            int sub_centroid = centroid_decomposition(adj, parents, visited_centroids, item, size); 
-            parents[centroid].push_back(sub_centroid); 
-            parents[sub_centroid].push_back(centroid); 
+            int sub_centroid = centroid_decomposition(adj, adj_nodes, visited_centroids, levels, item, level + 1, size); 
+            adj_nodes[centroid].push_back(sub_centroid); 
+            adj_nodes[sub_centroid].push_back(centroid); 
         } 
     } 
     return centroid; 
